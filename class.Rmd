@@ -7,24 +7,40 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(googlesheets4)
 ```
 
-## R Markdown
+```{r}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+sheets_deauth()
+x <- read_sheet("13NhlT-Oik5P4NOKRWwrJ7xZQlddFNk81HHEw9wkWglM")
+x
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#partisanship dvote
 
-```{r cars}
-summary(cars)
+x %>% 
+  ggplot(aes(x = partisanship)) +
+  geom_histogram(binwidth = .5, color = "white") +
+  facet_wrap(~dvote)
+
+x %>%
+  mutate(dvote = as.factor(dvote)) %>% 
+  ggplot(aes(x = partisanship, y = dvote, color = dvote)) +
+  geom_jitter(height = .1) +
+  geom_smooth(method = "lm", se = FALSE, color = "purple")
+
+x %>%
+  ggplot(aes(x = partisanship, y = dvote, color = dvote)) +
+  geom_jitter(height = .1) +
+  geom_smooth(method = "lm", se = FALSE, color = "purple")
+
+summary(x)
+
+x2 <- x %>%
+  mutate(dvote = as.factor(dvote))
+   
+lm(dvote ~ partisanship, data = x)      
+lm(dvote ~ partisanship, data = x2)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
