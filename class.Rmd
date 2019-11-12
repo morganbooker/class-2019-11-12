@@ -42,5 +42,12 @@ x2 <- x %>%
    
 lm(dvote ~ partisanship, data = x)      
 lm(dvote ~ partisanship, data = x2)
+
+glm(dvote ~ partisanship, data = x, family = binomial)
+
+x %>%
+  ggplot(aes(x = partisanship, y = dvote, color = dvote)) +
+  geom_jitter(height = .1) +
+  geom_smooth(method = "glm", se = FALSE, color = "black", method.args = list(family = "binomial"))
 ```
 
